@@ -111,3 +111,4 @@ REST_FRAMEWORK = {
 if os.environ['MODE'] == 'prod':
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
