@@ -104,11 +104,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     )
 }
 
 if os.environ['MODE'] == 'prod':
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
