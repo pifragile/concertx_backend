@@ -1,19 +1,19 @@
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')d7gu@p1t-8)4#m6qa_@g97r@_pkp$3-s5bilck^@@q@h3%s1d'
+SECRET_KEY = os.environ['SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ['DEBUG'] == 'TRUE'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host for host in os.environ['ALLOWED_HOSTS'].split(' ')]
 
 
 # Application definition
@@ -43,10 +43,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # TODO set to false in production
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
-)  # TODO remove in production
+    os.environ.get('FRONTEND_URL', ''),
+)
 
 ROOT_URLCONF = 'concertx_backend.urls'
 
@@ -107,3 +107,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+if os.environ['MODE'] == 'prod':
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True

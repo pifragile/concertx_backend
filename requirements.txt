@@ -8,3 +8,4 @@ pytz==2019.1
 six==1.12.0
 sqlparse==0.3.0
 virtualenv==16.5.0
+python-dotenv
