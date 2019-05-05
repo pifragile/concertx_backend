@@ -18,10 +18,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ConcertSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     accepted_by = UserSerializer(many=True, read_only=True)
+    canceled_by = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Concert
-        fields = ('id', 'location', 'date', 'confirmed', 'owner', 'accepted_by')
+        fields = ('id', 'location', 'date', 'confirmed', 'owner', 'accepted_by', 'canceled_by')
 
 
 class IsOwnerOrReadOnly(BasePermission):
@@ -42,12 +43,14 @@ class ConcertViewSet(viewsets.ModelViewSet):
     def accept(self, request, pk=None):
         concert = self.get_object()
         concert.accepted_by.add(request.user)
+        concert.canceled_by.remove(request.user)
         return Response(ConcertSerializer(concert).data)
 
     @action(detail=True, methods=['get'])
     def cancel(self, request, pk=None):
         concert = self.get_object()
         concert.accepted_by.remove(request.user)
+        concert.canceled_by.add(request.user)
         return Response(ConcertSerializer(concert).data)
 
     def perform_create(self, serializer):

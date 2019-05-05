@@ -8,3 +8,4 @@ class Concert(models.Model):
     confirmed = models.BooleanField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='concert_owner')
     accepted_by = models.ManyToManyField(User, related_name='concert_accepted_by', blank=True)
+    canceled_by = models.ManyToManyField(User, related_name='concert_canceled_by', blank=True)
