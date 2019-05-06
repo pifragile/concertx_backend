@@ -6,6 +6,8 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
+from datetime import datetime, timedelta
+from pytz import timezone
 
 
 # Serializers define the API representation.
@@ -34,7 +36,16 @@ class IsOwnerOrReadOnly(BasePermission):
         return obj.owner == request.user
 
 
-@permission_classes((IsAuthenticated, IsOwnerOrReadOnly))
+class ConcertIsInFutureOrReadOnly(BasePermission):
+    message = 'Cannot modify concerts that are more than 12 hours in the past.'
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS and view.action not in ['cancel', 'accept']:
+            return True
+        return datetime.now(timezone('Europe/Zurich')) - obj.date < timedelta(hours=12)
+
+
+@permission_classes((IsAuthenticated, IsOwnerOrReadOnly, ConcertIsInFutureOrReadOnly))
 class ConcertViewSet(viewsets.ModelViewSet):
     queryset = Concert.objects.all()
     serializer_class = ConcertSerializer
