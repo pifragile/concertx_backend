@@ -44,9 +44,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    os.environ.get('FRONTEND_URL', ''),
-)
+CORS_ORIGIN_WHITELIST = [url for url in os.environ['FRONTEND_URLS'].split(' ')]
 
 ROOT_URLCONF = 'concertx_backend.urls'
 
