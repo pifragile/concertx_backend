@@ -42,7 +42,7 @@ class ConcertIsInFutureOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS and view.action not in ['cancel', 'accept']:
             return True
-        return datetime.now(timezone('Europe/Zurich')) - obj.date < timedelta(hours=12)
+        return datetime.now(timezone('Europe/Zurich')) - obj.date < timedelta(days=1)
 
 
 @permission_classes((IsAuthenticated, IsOwnerOrReadOnly, ConcertIsInFutureOrReadOnly))
